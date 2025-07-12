@@ -1,3 +1,6 @@
+import Footer from "@/components/public/footer";
+import Navbar from "@/components/public/navbar";
+
 export default function PublicLayout({
   children,
 }: {
@@ -5,7 +8,11 @@ export default function PublicLayout({
 }) {
   return (
     <div className=" bg-gray-50">
-      <div className="">{children}</div>
+      <div className="">
+        <Navbar />
+        {children}
+        <Footer />
+      </div>
     </div>
   );
 }

@@ -2,6 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Plane, Shield, Clock, Users } from "lucide-react";
+import OurProcess from "@/components/public/OurProcess";
+import WhyFlyWithUs from "@/components/public/WhyFlyWithUs";
+import FeaturedCategory from "@/components/public/FeaturedCategory";
 
 export default function HomePage() {
   return (
@@ -131,84 +134,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gray-400 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Fly?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who choose LuxJet for their
-            private aviation needs
-          </p>
-          <Button asChild size="lg" variant="secondary">
-            <Link href="/register">Create Account</Link>
-          </Button>
-        </div>
+      <section className="py-0.5">
+        <FeaturedCategory />
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold text-white mb-4">LuxJet</h3>
-              <p className="text-sm">
-                Premium private jet rentals for discerning travelers worldwide
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/jets" className="hover:text-white">
-                    Browse Jets
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-white">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-white">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Support</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/faq" className="hover:text-white">
-                    FAQ
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-white">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-4">Contact</h4>
-              <ul className="space-y-2 text-sm">
-                <li>Email: info@luxjet.com</li>
-                <li>Phone: 1-800-LUXJET1</li>
-                <li>24/7 Support Available</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-            <p>&copy; 2025 LuxJet. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <section className="py-0.5">
+        <WhyFlyWithUs />
+      </section>
+
+      <section className="py-0.5">
+        <OurProcess />
+      </section>
     </div>
   );
 }
