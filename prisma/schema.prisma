@@ -1,0 +1,166 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  name          String?
+  phone         String?
+  image         String?
+  role          Role      @default(USER)
+  suspended     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  bookings Booking[]
+  payments Payment[]
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Jet {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  tailNumber   String   @unique
+  description  String
+  category     Category
+  capacity     Int
+  amenities    String[]
+  maxRange     Int      // in nautical miles
+  cruiseSpeed  Int      // in knots
+  pricePerHour Float
+  images       String[] @default([])
+  baseLocation String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  bookings     Booking[]
+  availability Availability[]
+}
+
+model Availability {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  jetId     String   @db.ObjectId
+  date      DateTime
+  available Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jet Jet @relation(fields: [jetId], references: [id], onDelete: Cascade)
+
+  @@unique([jetId, date])
+}
+
+model Booking {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String        @db.ObjectId
+  jetId          String        @db.ObjectId
+  departureDate  DateTime
+  returnDate     DateTime?
+  departureCity  String
+  arrivalCity    String
+  passengers     Int
+  totalPrice     Float
+  status         BookingStatus @default(PENDING)
+  specialRequests String?
+  pilotAssigned  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  user    User      @relation(fields: [userId], references: [id])
+  jet     Jet       @relation(fields: [jetId], references: [id])
+  payment Payment?
+}
+
+model Payment {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId        String        @unique @db.ObjectId
+  userId           String        @db.ObjectId
+  amount           Float
+  currency         String        @default("USD")
+  status           PaymentStatus @default(PENDING)
+  stripePaymentId  String?
+  stripeSessionId  String?
+  paymentMethod    String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  LIGHT_JET
+  MIDSIZE_JET
+  SUPER_MIDSIZE_JET
+  HEAVY_JET
+  ULTRA_LONG_RANGE_JET
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
