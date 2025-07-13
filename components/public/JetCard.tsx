@@ -22,13 +22,13 @@ const JetCard: React.FC<JetCardProps> = ({
 }) => {
   return (
     <div className="bg-gray-800 rounded-xl shadow-2xl overflow-hidden text-white flex flex-col">
-      {/* Image Placeholder. In a real application, you would use next/image. */}
       <div className="bg-gray-700 h-48 relative overflow-hidden">
-        {/* Placeholder image/background based on the design. Replace with actual image path. */}
         <Image
           src={imageSrc}
           alt={title}
           className="w-full h-full object-cover opacity-50"
+          width={100}
+          height={100}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
       </div>

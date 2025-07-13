@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -31,6 +31,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -43,6 +44,34 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
+  // Handle authentication errors from query parameters
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      let errorMessage = "Failed to sign in. Please try again.";
+      switch (error) {
+        case "CredentialsSignin":
+          errorMessage = "Invalid email or password";
+          break;
+        case "OAuthSignin":
+        case "OAuthCallback":
+        case "OAuthCreateAccount":
+          errorMessage = "Failed to sign in with Google. Please try again.";
+          break;
+        case "SessionRequired":
+          errorMessage = "You must be signed in to access this page.";
+          break;
+        default:
+          errorMessage = `Authentication error: ${error}`;
+      }
+      toast({
+        title: "Authentication Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    }
+  }, [searchParams, toast]);
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
 
@@ -51,16 +80,24 @@ export default function LoginPage() {
         email: data.email,
         password: data.password,
         redirect: false,
+        callbackUrl: searchParams.get("callbackUrl") || "/dashboard",
       });
 
       if (result?.error) {
         toast({
           title: "Error",
-          description: "Invalid email or password",
+          description:
+            result.error === "CredentialsSignin"
+              ? "Invalid email or password"
+              : `Authentication error: ${result.error}`,
           variant: "destructive",
         });
+      } else if (result?.url) {
+        router.push(result.url);
+        router.refresh();
       } else {
-        router.push("/dashboard");
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+        router.push(callbackUrl);
         router.refresh();
       }
     } catch (error) {
@@ -77,7 +114,8 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/dashboard" });
+      const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+      await signIn("google", { callbackUrl });
     } catch (error) {
       toast({
         title: "Error",
@@ -105,7 +143,7 @@ export default function LoginPage() {
             variant="outline"
             className="w-full"
             onClick={handleGoogleSignIn}
-            disabled={isGoogleLoading}
+            disabled={isGoogleLoading || isLoading}
           >
             {isGoogleLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -151,7 +189,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="name@example.com"
                 {...register("email")}
-                disabled={isLoading}
+                disabled={isLoading || isGoogleLoading}
               />
               {errors.email && (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -164,7 +202,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 {...register("password")}
-                disabled={isLoading}
+                disabled={isLoading || isGoogleLoading}
               />
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -173,7 +211,11 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || isGoogleLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

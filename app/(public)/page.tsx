@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -5,105 +7,49 @@ import { Plane, Shield, Clock, Users } from "lucide-react";
 import OurProcess from "@/components/public/OurProcess";
 import WhyFlyWithUs from "@/components/public/WhyFlyWithUs";
 import FeaturedCategory from "@/components/public/FeaturedCategory";
+import HeroSection from "@/components/public/HeroSection";
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#1c1c1c]">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1920"
-            alt="Private Jet"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-4 text-center text-white">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-            Fly in Luxury
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto animate-fade-in-delay">
-            Experience premium private jet travel with unmatched comfort,
-            flexibility, and service
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-delay-2">
-            <Button asChild size="lg" className="text-lg">
-              <Link href="/jets">Browse Jets</Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="text-lg bg-white/10 backdrop-blur"
-            >
-              <Link href="/register">Get Started</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-16 md:py-20 bg-[#1c1c1c]">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            Why Choose LuxJet
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-10 md:mb-12">
+            Why Choose Swift Jet
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center p-6">
-              <Plane className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-semibold mb-2">Premium Fleet</h3>
-              <p className="text-gray-600">
-                Access to the finest private jets, from light jets to
-                ultra-long-range aircraft
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <Shield className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-semibold mb-2">Safety First</h3>
-              <p className="text-gray-600">
-                Highest safety standards with experienced pilots and
-                well-maintained aircraft
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <Clock className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-semibold mb-2">24/7 Availability</h3>
-              <p className="text-gray-600">
-                Book your flight anytime, anywhere with our round-the-clock
-                service
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-semibold mb-2">
-                Personalized Service
-              </h3>
-              <p className="text-gray-600">
-                Tailored experiences to meet your specific travel needs and
-                preferences
-              </p>
-            </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 text-white">
+            {features.map((feature) => (
+              <div key={feature.title} className="text-center p-4">
+                <feature.icon className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-4 text-white" />
+                <h3 className="text-lg md:text-xl font-semibold mb-2 ">
+                  {feature.title}
+                </h3>
+                <p className="text-white text-sm md:text-base">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Popular Jets Section */}
-      <section className="py-20">
+      <section className="py-16 md:py-20 bg-[#1c1c1c] text-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 md:mb-12">
             Popular Aircraft
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {popularJets.map((jet) => (
               <div
                 key={jet.name}
                 className="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-xl transition-shadow"
               >
-                <div className="relative h-64">
+                <div className="relative h-56 md:h-64 lg:h-72">
                   <Image
                     src={jet.image}
                     alt={jet.name}
@@ -111,14 +57,18 @@ export default function HomePage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{jet.name}</h3>
-                  <p className="text-gray-600 mb-4">{jet.description}</p>
+                <div className="p-5">
+                  <h3 className="text-lg md:text-xl font-semibold mb-2">
+                    {jet.name}
+                  </h3>
+                  <p className="text-gray-600 text-sm md:text-base mb-4">
+                    {jet.description}
+                  </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-2xl font-bold text-primary">
-                      ${jet.price}/hr
+                    <span className="text-lg md:text-2xl font-bold text-primary">
+                      ₦{jet.price}/hr
                     </span>
-                    <Button asChild>
+                    <Button asChild size="sm" className="text-sm">
                       <Link href={`/jets/${jet.id}`}>View Details</Link>
                     </Button>
                   </div>
@@ -126,7 +76,7 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          <div className="text-center mt-12">
+          <div className="text-center text-black mt-10 md:mt-12">
             <Button asChild size="lg" variant="outline">
               <Link href="/jets">View All Aircraft</Link>
             </Button>
@@ -134,15 +84,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-0.5">
+      {/* Additional Sections */}
+      <section className="py-10 md:py-12">
         <FeaturedCategory />
       </section>
 
-      <section className="py-0.5">
+      <section className="py-10 md:py-12">
         <WhyFlyWithUs />
       </section>
 
-      <section className="py-0.5">
+      <section className="py-10 md:py-12">
         <OurProcess />
       </section>
     </div>
@@ -173,5 +124,32 @@ const popularJets = [
       "Ultimate luxury with intercontinental range and three living spaces",
     price: "8,500",
     image: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=800",
+  },
+];
+
+const features = [
+  {
+    title: "Premium Fleet",
+    description:
+      "Access to the finest private jets, from light jets to ultra-long-range aircraft",
+    icon: Plane,
+  },
+  {
+    title: "Safety First",
+    description:
+      "Highest safety standards with experienced pilots and well-maintained aircraft",
+    icon: Shield,
+  },
+  {
+    title: "24/7 Availability",
+    description:
+      "Book your flight anytime, anywhere with our round-the-clock service",
+    icon: Clock,
+  },
+  {
+    title: "Personalized Service",
+    description:
+      "Tailored experiences to meet your specific travel needs and preferences",
+    icon: Users,
   },
 ];
