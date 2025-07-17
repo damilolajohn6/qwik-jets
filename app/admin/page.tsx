@@ -18,7 +18,6 @@ export default async function AdminDashboard() {
     totalJets,
     activeJets,
     totalCustomers,
-    // totalBookings,
     monthlyBookings,
     monthlyRevenue,
     pendingBookings,
@@ -27,7 +26,6 @@ export default async function AdminDashboard() {
     prisma.jet.count(),
     prisma.jet.count({ where: { isActive: true } }),
     prisma.user.count({ where: { role: "USER" } }),
-    prisma.booking.count(),
     prisma.booking.count({
       where: {
         createdAt: {

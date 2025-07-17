@@ -20,11 +20,11 @@ export const jetCreateSchema = z.object({
     tailNumber: z.string().min(5, 'Tail number must be at least 5 characters'),
     description: z.string().min(10, 'Description must be at least 10 characters'),
     category: z.nativeEnum(Category),
-    capacity: z.number().int().min(1).max(20),
+    capacity: z.number().int().min(1).max(200),
     amenities: z.array(z.string()),
-    maxRange: z.number().int().min(100).max(10000),
-    cruiseSpeed: z.number().int().min(100).max(600),
-    pricePerHour: z.number().min(500).max(20000),
+    maxRange: z.number().int().min(100).max(100000),
+    cruiseSpeed: z.number().int().min(100).max(6000),
+    pricePerHour: z.number().min(500).max(20000000000),
     images: z.array(z.string().url()),
     baseLocation: z.string().min(2),
 })
@@ -41,14 +41,15 @@ export const jetFilterSchema = z.object({
 
 // Booking schemas
 export const bookingCreateSchema = z.object({
-    jetId: z.string(),
-    departureDate: z.string().datetime(),
-    returnDate: z.string().datetime().optional(),
-    departureCity: z.string().min(2),
-    arrivalCity: z.string().min(2),
-    passengers: z.number().int().min(1).max(20),
+    jetId: z.string().min(1, "Jet ID is required"),
+    departureDate: z.string().datetime({ message: "Invalid departure date" }),
+    returnDate: z.string().datetime({ message: "Invalid return date" }).optional(),
+    departureCity: z.string().min(2, "Departure city must be at least 2 characters"),
+    arrivalCity: z.string().min(2, "Arrival city must be at least 2 characters"),
+    passengers: z.number().int().min(1).max(200),
     specialRequests: z.string().optional(),
-})
+    totalPrice: z.number().min(0, "Total price must be non-negative"),
+});
 
 export const bookingUpdateSchema = z.object({
     status: z.nativeEnum(BookingStatus),
