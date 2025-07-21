@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import  prisma  from "@/lib/db";
+import prisma from "@/lib/db";
 import {
   Card,
   CardContent,
@@ -12,18 +12,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency, formatDate, getStatusColor } from "@/lib/utils";
-import {
-  Calendar,
-  MapPin,
-  Users,
-  Plane,
-} from "lucide-react";
+import { Calendar, MapPin, Users, Plane } from "lucide-react";
 import Link from "next/link";
 
 interface BookingDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function BookingDetailPage({
@@ -35,10 +28,11 @@ export default async function BookingDetailPage({
     redirect("/login");
   }
 
+  const { id } = await params;
+
   const booking = await prisma.booking.findUnique({
     where: {
-      id: params.id,
-      // Only show booking if user owns it or is admin
+      id,
       ...(session.user.role !== "ADMIN" && { userId: session.user.id }),
     },
     include: {

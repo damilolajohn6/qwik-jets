@@ -25,9 +25,7 @@ import {
 } from "lucide-react";
 
 interface JetDetailPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 const amenityIcons: Record<string, any> = {
@@ -45,6 +43,7 @@ const amenityIcons: Record<string, any> = {
 
 export default async function JetDetailPage({ params }: JetDetailPageProps) {
   const { id } = await params;
+  
   const jet = await prisma.jet.findUnique({
     where: {
       id: id,

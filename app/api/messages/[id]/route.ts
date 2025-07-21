@@ -4,11 +4,14 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         await connectDB();
-        const deleted = await Message.findByIdAndDelete(params.id);
+        // Await the params Promise to get the actual parameters
+        const { id } = await params;
+
+        const deleted = await Message.findByIdAndDelete(id);
 
         if (!deleted) {
             return NextResponse.json(

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import  prisma  from "@/lib/db";
+import prisma from "@/lib/db";
 import {
   Card,
   CardContent,
@@ -10,14 +10,15 @@ import {
 import { JetForm } from "@/components/admin/jet-form";
 
 interface EditJetPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditJetPage({ params }: EditJetPageProps) {
+
+  const { id } = await params;
+
   const jet = await prisma.jet.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!jet) {

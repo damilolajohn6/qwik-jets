@@ -1,26 +1,30 @@
-import  prisma  from "@/lib/db";
+import prisma from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CustomersTable } from "@/components/admin/customers-table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Download } from "lucide-react";
 
+// Update the interface to reflect that searchParams is a Promise
 export default async function AdminCustomersPage({
   searchParams,
 }: {
-  searchParams: { search?: string; page?: string };
+  searchParams: Promise<{ search?: string; page?: string }>;
 }) {
-  const page = parseInt(searchParams.page || "1");
+  // Await the searchParams Promise to get the actual parameters
+  const { search, page: pageParam } = await searchParams;
+
+  const page = parseInt(pageParam || "1");
   const limit = 20;
   const skip = (page - 1) * limit;
-  const search = searchParams.search || "";
+  const searchTerm = search || "";
 
-  const where = search
+  const where = searchTerm
     ? {
         OR: [
-          { name: { contains: search, mode: "insensitive" as const } },
-          { email: { contains: search, mode: "insensitive" as const } },
-          { phone: { contains: search, mode: "insensitive" as const } },
+          { name: { contains: searchTerm, mode: "insensitive" as const } },
+          { email: { contains: searchTerm, mode: "insensitive" as const } },
+          { phone: { contains: searchTerm, mode: "insensitive" as const } },
         ],
         role: "USER" as const,
       }
@@ -77,7 +81,7 @@ export default async function AdminCustomersPage({
               <Input
                 name="search"
                 placeholder="Search customers..."
-                defaultValue={search}
+                defaultValue={searchTerm}
                 className="w-64"
               />
               <Button type="submit" size="icon" variant="secondary">

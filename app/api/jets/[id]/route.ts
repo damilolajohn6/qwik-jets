@@ -1,14 +1,17 @@
-import { NextResponse } from 'next/server'
-import  prisma  from '@/lib/db'
+import { NextResponse } from 'next/server';
+import prisma from '@/lib/db';
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Await the params Promise to get the actual parameters
+        const { id } = await params;
+
         const jet = await prisma.jet.findUnique({
             where: {
-                id: params.id,
+                id,
                 isActive: true,
             },
             include: {
@@ -21,21 +24,21 @@ export async function GET(
                     },
                 },
             },
-        })
+        });
 
         if (!jet) {
             return NextResponse.json(
                 { error: 'Jet not found' },
                 { status: 404 }
-            )
+            );
         }
 
-        return NextResponse.json(jet)
+        return NextResponse.json(jet);
     } catch (error) {
-        console.error('Error fetching jet:', error)
+        console.error('Error fetching jet:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
-        )
+        );
     }
 }

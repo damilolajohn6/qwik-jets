@@ -10,16 +10,16 @@ import { MapPin, Users, Gauge, Globe } from "lucide-react";
 import type { Prisma } from "@prisma/client";
 
 interface JetsListProps {
-  searchParams: Promise<{
+  searchParams: {
     category?: string;
     minCapacity?: string;
     maxPrice?: string;
     location?: string;
-  }>;
+  };
 }
 
 export default async function JetsList({ searchParams }: JetsListProps) {
-  const resolvedParams = await searchParams;
+  const resolvedParams = searchParams;
 
   const where: Prisma.JetWhereInput = {
     isActive: true,
@@ -146,4 +146,3 @@ export default async function JetsList({ searchParams }: JetsListProps) {
     </div>
   );
 }
-
