@@ -2,15 +2,17 @@ import { notFound } from "next/navigation";
 import prisma from "@/lib/db";
 import { BookingForm } from "@/components/jets/booking-form";
 
+// Update the interface to reflect that params is a Promise
 interface BookingPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function BookingPage({ params }: BookingPageProps) {
+  // Await the params Promise to get the actual parameters
+  const { id } = await params;
+
   const jet = await prisma.jet.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!jet) {
