@@ -8,8 +8,8 @@ import {
   Plane,
   Users,
   Calendar,
-  Settings,
   LogOut,
+  Mail
 } from "lucide-react";
 
 const navigation = [
@@ -17,7 +17,7 @@ const navigation = [
   { name: "Jets", href: "/admin/jets", icon: Plane },
   { name: "Customers", href: "/admin/customers", icon: Users },
   { name: "Bookings", href: "/admin/bookings", icon: Calendar },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Messages", href: "/admin/messages", icon: Mail },
 ];
 
 export function AdminSidebar() {

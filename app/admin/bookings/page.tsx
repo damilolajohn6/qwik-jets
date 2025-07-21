@@ -1,24 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import  prisma  from "@/lib/db";
+import prisma from "@/lib/db";
+import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookingsTable } from "@/components/admin/bookings-table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { BookingStatus } from "@prisma/client";
 
-export default async function AdminBookingsPage({
-  searchParams,
-}: {
-  searchParams: { status?: string; page?: string };
-}) {
-  const page = parseInt(searchParams.page || "1");
+interface AdminBookingsPageProps {
+  searchParams: Promise<{ status?: string; page?: string }>;
+}
+
+export default async function AdminBookingsPage( { searchParams }: AdminBookingsPageProps) {
+
+  const resolvedSearchParams = await searchParams;
+
+  const page = parseInt(resolvedSearchParams.page || "1", 10);
+  if (isNaN(page) || page < 1) {
+    // Redirect to default page or handle invalid page numbers
+    notFound();
+  }
   const limit = 20;
   const skip = (page - 1) * limit;
-  const statusFilter = searchParams.status;
+  const statusFilter = resolvedSearchParams.status as BookingStatus | undefined;
 
   const where = statusFilter ? { status: statusFilter as any } : {};
 
@@ -109,7 +111,7 @@ export default async function AdminBookingsPage({
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>All Bookings ({totalCount})</CardTitle>
-            <form>
+            {/* <form>
               <Select name="status" defaultValue={statusFilter || ""}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="All statuses" />
@@ -122,7 +124,7 @@ export default async function AdminBookingsPage({
                   <SelectItem value="COMPLETED">Completed</SelectItem>
                 </SelectContent>
               </Select>
-            </form>
+            </form> */}
           </div>
         </CardHeader>
         <CardContent>

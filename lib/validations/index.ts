@@ -42,8 +42,14 @@ export const jetFilterSchema = z.object({
 // Booking schemas
 export const bookingCreateSchema = z.object({
     jetId: z.string().min(1, "Jet ID is required"),
-    departureDate: z.string().datetime({ message: "Invalid departure date" }),
-    returnDate: z.string().datetime({ message: "Invalid return date" }).optional(),
+    departureDate: z
+        .string()
+        .min(1, "Departure date is required")
+        .transform((val) => new Date(val).toISOString()),
+    returnDate: z
+        .string()
+        .optional()
+        .transform((val) => (val ? new Date(val).toISOString() : undefined)),
     departureCity: z.string().min(2, "Departure city must be at least 2 characters"),
     arrivalCity: z.string().min(2, "Arrival city must be at least 2 characters"),
     passengers: z.number().int().min(1).max(200),
